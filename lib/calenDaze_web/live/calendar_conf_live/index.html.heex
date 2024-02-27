@@ -1,0 +1,41 @@
+<.header>
+  Listing Calendar confs
+  <:actions>
+    <.link patch={~p"/calendar_confs/new"}>
+      <.button>New Calendar conf</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="calendar_confs"
+  rows={@streams.calendar_confs}
+  row_click={fn {_id, calendar_conf} -> JS.navigate(~p"/calendar_confs/#{calendar_conf}") end}
+>
+  <:col :let={{_id, calendar_conf}} label="Work hours"><%= calendar_conf.work_hours %></:col>
+  <:action :let={{_id, calendar_conf}}>
+    <div class="sr-only">
+      <.link navigate={~p"/calendar_confs/#{calendar_conf}"}>Show</.link>
+    </div>
+    <.link patch={~p"/calendar_confs/#{calendar_conf}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, calendar_conf}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: calendar_conf.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="calendar_conf-modal" show on_cancel={JS.patch(~p"/calendar_confs")}>
+  <.live_component
+    module={CalenDazeWeb.CalendarConfLive.FormComponent}
+    id={@calendar_conf.id || :new}
+    title={@page_title}
+    action={@live_action}
+    calendar_conf={@calendar_conf}
+    patch={~p"/calendar_confs"}
+  />
+</.modal>

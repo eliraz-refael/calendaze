@@ -1,0 +1,43 @@
+<.header>
+  Listing Appointments
+  <:actions>
+    <.link patch={~p"/appointments/new"}>
+      <.button>New Appointment</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="appointments"
+  rows={@streams.appointments}
+  row_click={fn {_id, appointment} -> JS.navigate(~p"/appointments/#{appointment}") end}
+>
+  <:col :let={{_id, appointment}} label="Auhorized"><%= appointment.auhorized %></:col>
+  <:col :let={{_id, appointment}} label="Start time"><%= appointment.start_time %></:col>
+  <:col :let={{_id, appointment}} label="End time"><%= appointment.end_time %></:col>
+  <:action :let={{_id, appointment}}>
+    <div class="sr-only">
+      <.link navigate={~p"/appointments/#{appointment}"}>Show</.link>
+    </div>
+    <.link patch={~p"/appointments/#{appointment}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, appointment}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: appointment.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="appointment-modal" show on_cancel={JS.patch(~p"/appointments")}>
+  <.live_component
+    module={CalenDazeWeb.AppointmentLive.FormComponent}
+    id={@appointment.id || :new}
+    title={@page_title}
+    action={@live_action}
+    appointment={@appointment}
+    patch={~p"/appointments"}
+  />
+</.modal>

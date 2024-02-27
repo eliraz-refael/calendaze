@@ -71,6 +71,13 @@ defmodule CalenDazeWeb.Router do
       on_mount: [{CalenDazeWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/appointments", AppointmentLive.Index, :index
+      live "/appointments/new", AppointmentLive.Index, :new
+      live "/appointments/:id/edit", AppointmentLive.Index, :edit
+
+      live "/appointments/:id", AppointmentLive.Show, :show
+      live "/appointments/:id/show/edit", AppointmentLive.Show, :edit
     end
   end
 
@@ -109,6 +116,13 @@ defmodule CalenDazeWeb.Router do
       on_mount: [{CalenDazeWeb.BusinessAuth, :ensure_authenticated}] do
       live "/businesses/settings", BusinessSettingsLive, :edit
       live "/businesses/settings/confirm_email/:token", BusinessSettingsLive, :confirm_email
+
+      live "/calendar_confs", CalendarConfLive.Index, :index
+      live "/calendar_confs/new", CalendarConfLive.Index, :new
+      live "/calendar_confs/:id/edit", CalendarConfLive.Index, :edit
+
+      live "/calendar_confs/:id", CalendarConfLive.Show, :show
+      live "/calendar_confs/:id/show/edit", CalendarConfLive.Show, :edit
     end
   end
 
